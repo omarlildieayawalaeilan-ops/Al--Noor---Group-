@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>برنامج ميزان السيارات - النور جروب</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .preview-section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .section-title {
+            color: #2a5298;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.2);
+            outline: none;
+        }
+        
+        .btn {
+            background: #2a5298;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: #1e3c72;
+            transform: translateY(-2px);
+        }
+        
+        .btn-print {
+            background: #27ae60;
+        }
+        
+        .btn-print:hover {
+            background: #219653;
+        }
+        
+        .tickets-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .ticket {
+            width: 100%;
+            border: 1px solid #000;
+            padding: 10px;
+            background: white;
+            font-size: 12px;
+            page-break-inside: avoid;
+        }
+        
+        .ticket table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .ticket th, .ticket td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: center;
+        }
+        
+        .ticket-header {
+            text-align: center;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #000;
+        }
+        
+        .ticket-header h2 {
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+        
+        .ticket-header p {
+            font-size: 12px;
+        }
+        
+        .net-weight {
+            font-weight: bold;
+            font-size: 14px;
+            background-color: #f0f0f0;
+        }
+        
+        .ticket-footer {
+            text-align: center;
+            margin-top: 8px;
+            padding-top: 5px;
+            border-top: 1px solid #000;
+            font-size: 10px;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 350px;
+        }
+        
+        .actions .btn {
+            flex: 1;
+        }
+        
+        /* تصميم خاص للطباعة */
+        @media print {
+            body * {
+                visibility: hidden;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .print-container, .print-container * {
+                visibility: visible;
+            }
+            
+            .print-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .tickets-print {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                height: 100vh;
+            }
+            
+            .ticket-row {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                height: 60vh;
+                margin-bottom: 0;
+                page-break-inside: avoid;
+            }
+            
+            .ticket {
+                width: 100%;
+                height: 30vh;
+                border: 1px solid #000;
+                padding: 10px;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+            
+            .ticket:first-child {
+                border-bottom: none;
+            }
+            
+            .empty-space {
+                height: 40vh;
+                width: 100%;
+            }
+            
+            .no-print {
+                display: none;
+            }
+            
+            @page {
+                size: A4;
+                margin: 0.5cm;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .input-section, .preview-section {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container no-print">
+        <header>
+            <h1>برنامج ميزان السيارات - النور جروب</h1>
+            <p> من تصميم المهندس عمر صالح </p>
+        </header>
+        
+        <div class="app-container">
+            <div class="input-section">
+                <h2 class="section-title">إدخال بيانات الوزن</h2>
+                
+                <div class="form-group">
+                    <label for="customerName">اسم العميل</label>
+                    <input type="text" id="customerName" placeholder="أدخل اسم العميل">
+                </div>
+                
+                <div class="form-group">
+                    <label for="netWeight">الوزن الصافي (كجم)</label>
+                    <input type="number" id="netWeight" placeholder="أدخل الوزن الصافي">
+                </div>
+                
+                <div class="form-group">
+                    <label for="vehicleType">نوع الصنف</label>
+                    <select id="vehicleType">
+                        <option value="">اختر نوع الصنف</option>
+                        <option value="حديد">حديد</option>
+                        <option value="كنات">كنات</option>
+                    </select>
+                </div>
+                
+                <button class="btn" id="generateTicket">إنشاء بطاقة الوزن</button>
+            </div>
+            
+            <div class="preview-section">
+                <h2 class="section-title">معاينة بطاقة الوزن</h2>
+                
+                <div class="tickets-container" id="ticketsContainer">
+                    <!-- سيتم إنشاء البطاقات هنا -->
+                </div>
+                
+                <div class="actions">
+                    <button class="btn btn-print" id="printTicket">طباعة البطاقة</button>
+                    <button class="btn" id="newTicket">بطاقة جديدة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- قسم الطباعة المخفي -->
+    <div class="print-container" id="printContainer" style="display: none;"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const customerNameInput = document.getElementById('customerName');
+            const netWeightInput = document.getElementById('netWeight');
+            const vehicleTypeSelect = document.getElementById('vehicleType');
+            const generateTicketBtn = document.getElementById('generateTicket');
+            const printTicketBtn = document.getElementById('printTicket');
+            const newTicketBtn = document.getElementById('newTicket');
+            const ticketsContainer = document.getElementById('ticketsContainer');
+            const printContainer = document.getElementById('printContainer');
+            
+            // تحديث التاريخ والوقت تلقائياً
+            function getCurrentDateTime() {
+                const now = new Date();
+                
+                // تنسيق التاريخ
+                const optionsDate = { year: 'numeric', month: 'long', day: 'numeric' };
+                const dateString = now.toLocaleDateString('ar-EG', optionsDate);
+                
+                // تنسيق الوقت
+                const timeString = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+                
+                return { date: dateString, time: timeString };
+            }
+            
+            // إنشاء بطاقة الوزن
+            function createTicket(customerName, netWeight, vehicleType, index) {
+                const { date, time } = getCurrentDateTime();
+                
+                return `
+                    <div class="ticket">
+                        <div class="ticket-header">
+                            <h2>النور جروب</h2>
+                            <p>- بطاقة وزن السياره - للتواصل 01008102097 -01068566282 ${index}</p>
+                        </div>
+                        
+                        <table>
+                            <tr>
+                                <td>اسم العميل</td>
+                                <td>${customerName}</td>
+                            </tr>
+                            <tr>
+                                <td>الوزن الصافي</td>
+                                <td class="net-weight">${netWeight} كجم</td>
+                            </tr>
+                            <tr>
+                                <td>نوع الصنف</td>
+                                <td>${vehicleType}</td>
+                            </tr>
+                            <tr>
+                                <td>التاريخ</td>
+                                <td>${date}</td>
+                            </tr>
+                            <tr>
+                                <td>الوقت</td>
+                                <td>${time}</td>
+                            </tr>
+                        </table>
+                        
+                        <div class="ticket-footer">
+                            <p>Thank you for your business with Al Noor Group - شكراً لتعاملكم مع النور جروب</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // إنشاء نسختين من البطاقة في صفحة واحدة للطباعة
+            generateTicketBtn.addEventListener('click', function() {
+                const customerName = customerNameInput.value.trim();
+                const netWeight = netWeightInput.value.trim();
+                const vehicleType = vehicleTypeSelect.value;
+                
+                if (!customerName) {
+                    alert('يرجى إدخال اسم العميل');
+                    customerNameInput.focus();
+                    return;
+                }
+                
+                if (!netWeight || isNaN(netWeight) || netWeight <= 0) {
+                    alert('يرجى إدخال وزن صافي صحيح');
+                    netWeightInput.focus();
+                    return;
+                }
+                
+                if (!vehicleType) {
+                    alert('يرجى اختيار نوع الصنف');
+                    vehicleTypeSelect.focus();
+                    return;
+                }
+                
+                // إنشاء نسختين من البطاقة للمعاينة
+                ticketsContainer.innerHTML = '';
+                for (let i = 1; i <= 2; i++) {
+                    ticketsContainer.innerHTML += createTicket(customerName, netWeight, vehicleType, i);
+                }
+                
+                // إنشاء محتوى الطباعة مع نسختين في صفحة واحدة
+                let printContent = `
+                    <div class="tickets-print">
+                        <div class="ticket-row">
+                            ${createTicket(customerName, netWeight, vehicleType, 1)}
+                            ${createTicket(customerName, netWeight, vehicleType, 2)}
+                        </div>
+                        <div class="empty-space"></div>
+                    </div>
+                `;
+                
+                printContainer.innerHTML = printContent;
+                
+                // تمكين زر الطباعة
+                printTicketBtn.disabled = false;
+            });
+            
+            // طباعة البطاقة
+            printTicketBtn.addEventListener('click', function() {
+                // إظهار محتوى الطباعة وإخفاء المحتوى العادي
+                const printContent = printContainer.innerHTML;
+                const newWindow = window.open('', '_blank');
+                
+                newWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html dir="rtl">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>طباعة بطاقة الوزن</title>
+                        <style>
+                            body {
+                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                margin: 0;
+                                padding: 0;
+                                direction: rtl;
+                            }
+                            .tickets-print {
+                                display: flex;
+                                flex-direction: column;
+                                width: 100%;
+                                height: 100vh;
+                            }
+                            .ticket-row {
+                                display: flex;
+                                flex-direction: column;
+                                width: 100%;
+                                height: 60vh;
+                            }
+                            .ticket {
+                                width: 100%;
+                                height: 30vh;
+                                border: 1px solid #000;
+                                padding: 10px;
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: space-between;
+                                page-break-inside: avoid;
+                            }
+                            .ticket:first-child {
+                                border-bottom: none;
+                            }
+                            .empty-space {
+                                height: 40vh;
+                                width: 100%;
+                            }
+                            .ticket table {
+                                width: 100%;
+                                border-collapse: collapse;
+                            }
+                            .ticket th, .ticket td {
+                                border: 1px solid #000;
+                                padding: 5px;
+                                text-align: center;
+                            }
+                            .ticket-header {
+                                text-align: center;
+                                margin-bottom: 8px;
+                                padding-bottom: 5px;
+                                border-bottom: 1px solid #000;
+                            }
+                            .ticket-header h2 {
+                                font-size: 16px;
+                                margin-bottom: 3px;
+                            }
+                            .ticket-header p {
+                                font-size: 12px;
+                            }
+                            .net-weight {
+                                font-weight: bold;
+                                font-size: 14px;
+                                background-color: #f0f0f0;
+                            }
+                            .ticket-footer {
+                                text-align: center;
+                                margin-top: 8px;
+                                padding-top: 5px;
+                                border-top: 1px solid #000;
+                                font-size: 10px;
+                            }
+                            @page {
+                                size: A4;
+                                margin: 0.5cm;
+                            }
+                            @media print {
+                                body {
+                                    margin: 0;
+                                    padding: 0;
+                                }
+                            }
+                        </style>
+                    </head>
+                    <body onload="window.print();">
+                        ${printContent}
+                    </body>
+                    </html>
+                `);
+                
+                newWindow.document.close();
+                
+                // إغلاق النافذة بعد الطباعة
+                newWindow.onafterprint = function() {
+                    setTimeout(() => {
+                        newWindow.close();
+                    }, 500);
+                };
+            });
+            
+            // إنشاء بطاقة جديدة
+            newTicketBtn.addEventListener('click', function() {
+                // مسح الحقول
+                customerNameInput.value = '';
+                netWeightInput.value = '';
+                vehicleTypeSelect.value = '';
+                
+                // إعادة تعيين المعاينة
+                ticketsContainer.innerHTML = '';
+                printContainer.innerHTML = '';
+                
+                // تعطيل زر الطباعة
+                printTicketBtn.disabled = true;
+                
+                // التركيز على حقل اسم العميل
+                customerNameInput.focus();
+            });
+        });
+    </script>
+</body>
+</html>
