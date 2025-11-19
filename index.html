@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>برنامج ميزان السيارات - النور جروب</title>
+    <title>برنامج ميزان السيارات - السؤرجروب</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            background: #f0f2f5;
             color: #333;
             line-height: 1.6;
             min-height: 100vh;
@@ -28,11 +28,11 @@
         header {
             text-align: center;
             margin-bottom: 30px;
-            color: white;
+            color: #2c3e50;
             padding: 20px;
             border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
         header h1 {
@@ -58,7 +58,7 @@
             background: white;
             padding: 25px;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         
         .preview-section {
@@ -67,14 +67,14 @@
             background: white;
             padding: 25px;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         
         .section-title {
-            color: #2a5298;
+            color: #2c3e50;
             margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 2px solid #eee;
@@ -102,13 +102,13 @@
         }
         
         input:focus, select:focus {
-            border-color: #2a5298;
-            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.2);
+            border-color: #2c3e50;
+            box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.2);
             outline: none;
         }
         
         .btn {
-            background: #2a5298;
+            background: #2c3e50;
             color: white;
             border: none;
             padding: 12px 25px;
@@ -122,7 +122,7 @@
         }
         
         .btn:hover {
-            background: #1e3c72;
+            background: #1a252f;
             transform: translateY(-2px);
         }
         
@@ -138,182 +138,300 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 0.4cm; /* تقليل الفجوة حتى تتسع ثلاث بطاقات في الصفحة */
             margin-bottom: 20px;
+            align-items: center;
+            padding: 10px;
+            overflow: auto; /* تمكين التمرير لمنع التداخل */
         }
         
+        /* تقليل حجم البطاقات ليتسع 3 بطاقات ضمن أول 25 سم تقريبًا */
         .ticket {
-            width: 100%;
-            border: 2px solid #000;
-            padding: 15px;
+            width: 18cm; /* عرض مناسب داخل الهوامش */
+            height: 9cm;  /* ارتفاع أصغر ليتيح وجود 3 بطاقات مع الفجوات ضمن صفحة A4 */
             background: white;
-            font-size: 14px;
+            border: 6px solid #000; /* تقليل سمك الإطار لتوفير مساحة */
+            border-radius: 24px;
+            box-sizing: border-box;
             page-break-inside: avoid;
+            margin: 0 auto;
+            overflow: hidden;
+            flex-shrink: 0; /* منع انكماش البطاقة عند المساحات الضيقة */
         }
         
-        .ticket table {
+        .ticket-inner {
+            box-sizing: border-box;
+            border: 3px solid #000; /* الحد الداخلي */
+            border-radius: 16px;
+            margin: 8px;
+            height: calc(100% - 16px);
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            flex-shrink: 0; /* منع انكماش الحاوية الداخلية */
+        }
+        
+        /* اجعل خطوط العنوان والقيم كلها بنفس حجم العنوان */
+        .ticket-title {
+            text-align: center;
+            font-size: var(--ticket-font-size);
+            font-weight: 900;
+            padding: 8px 0;
+            border-bottom: 3px solid #000;
+            direction: rtl;
+            line-height: 1.1;
+        }
+        
+        .ticket-body {
+            flex: 1;
+            display: flex;
+            gap: 12px;
+            padding: 10px;
+            box-sizing: border-box;
+            align-items: stretch;
+            flex-shrink: 0; /* منع انكماش المنطقة الداخلية */
+        }
+        
+        /* الآن البطاقة مقسومة إلى نصفين متساويين */
+        .info-box {
+            flex: 1; /* نصف البطاقة للمعلومات */
+            display: flex;
+            flex-direction: column;
+            border: 3px solid #000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding: 8px;
+            justify-content: center;
+            background: #fff;
+            min-width: 8cm; /* يمنع الانهيار ويجبر التقسيم إلى نصفين */
+            flex-basis: 50%;
+            flex-shrink: 0; /* منع الانكماش */
+        }
+        
+        .weight-box {
+            flex: 1; /* نصف البطاقة للوزن */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            min-width: 8cm; /* يمنع الانهيار */
+            flex-basis: 50%;
+            flex-shrink: 0; /* منع الانكماش */
+        }
+        
+        .weight-area {
+            border: 3px solid #000;
+            border-radius: 14px;
+            width: 100%;
+            height: 100%;
+            padding: 14px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .weight-label {
+            font-weight: 900;
+            font-size: var(--ticket-font-size);
+            text-align: right;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        
+        .weight-value {
+            font-size: var(--ticket-font-size);
+            font-weight: 900;
+            text-align: center;
+            width: 100%;
+            line-height: 1;
+        }
+        
+        .info-row {
+            padding: 10px 8px;
+            border-bottom: 1px solid #000;
+            text-align: center;
+            background: #fff;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .info-row .label {
+            display: block;
+            font-weight: 900;
+            font-size: 20px; /* تكبير تسمية الحقل */
+        }
+        
+        .info-row .value {
+            display: block;
+            font-weight: 700;
+            margin-top: 6px;
+            font-size: 22px; /* تكبير قيمة الحقل */
+            word-break: break-word;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        /* أنماط الجدول داخل البطاقة (العنوان مفصول عن البيانات) */
+        .ticket-table {
             width: 100%;
             border-collapse: collapse;
-            border: 2px solid #000;
+            height: 100%;
+            table-layout: fixed;
         }
         
-        .ticket th, .ticket td {
+        .ticket-table th {
+            font-size: var(--ticket-font-size);
+            font-weight: 900;
+            padding: 12px;
+            text-align: center;
+            border-bottom: 3px solid #000;
+            background: #fff;
+        }
+        
+        .ticket-table td {
             border: 2px solid #000;
             padding: 8px;
+            vertical-align: middle;
             text-align: center;
-            font-size: 15px;
+            font-size: var(--ticket-font-size); /* نفس حجم العنوان */
+            word-break: break-word;
         }
         
-        .ticket th {
-            background-color: #f5f5f5;
-            font-weight: bold;
+        .ticket-table td.label {
+            font-weight: 900;
+            width: 35%;
+            background: #fafafa;
         }
         
-        .ticket-header {
-            text-align: center;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #000;
+        .ticket-table td.value {
+            font-weight: 700;
+            width: 65%;
         }
         
-        .ticket-header h2 {
-            font-size: 20px;
-            margin-bottom: 5px;
-            font-weight: bold;
+        /* ضمان عدم تلامس البطاقات كقيمة احتياطية */
+        .tickets-container > .ticket {
+            margin-bottom: 2cm;
         }
         
-        .ticket-header p {
-            font-size: 14px;
-            font-weight: bold;
-        }
-        
-        .net-weight {
-            font-weight: bold;
-            font-size: 16px;
-            background-color: #f0f0f0;
-        }
-        
-        .ticket-footer {
-            text-align: center;
-            margin-top: 12px;
-            padding-top: 8px;
-            border-top: 2px solid #000;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        
-        .actions {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-            max-width: 350px;
-        }
-        
-        .actions .btn {
-            flex: 1;
-        }
-        
-        /* تصميم خاص للطباعة */
-        @media print {
-            body * {
-                visibility: hidden;
-                margin: 0;
-                padding: 0;
-            }
-            
-            .print-container, .print-container * {
-                visibility: visible;
-            }
-            
-            .print-container {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                padding: 0;
-                margin: 0;
-            }
-            
-            .tickets-print {
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                height: 100vh;
-            }
-            
-            .ticket-row {
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                height: 60vh;
-                margin-bottom: 0;
-                page-break-inside: avoid;
-            }
-            
-            .ticket {
-                width: 100%;
-                height: 30vh;
-                border: 2px solid #000;
-                padding: 15px;
-                margin: 0;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-            }
-            
-            .ticket:first-child {
-                border-bottom: none;
-            }
-            
-            .ticket table {
-                border: 2px solid #000;
-            }
-            
-            .ticket th, .ticket td {
-                border: 2px solid #000;
-                padding: 8px;
-                font-size: 15px;
-            }
-            
-            .ticket-header {
-                border-bottom: 2px solid #000;
-            }
-            
-            .ticket-footer {
-                border-top: 2px solid #000;
-            }
-            
-            .empty-space {
-                height: 40vh;
-                width: 100%;
-            }
-            
-            .no-print {
-                display: none;
-            }
-            
-            @page {
-                size: A4;
-                margin: 0.5cm;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .app-container {
-                flex-direction: column;
-            }
-            
-            .input-section, .preview-section {
-                width: 100%;
-            }
-        }
+        /* إضافة/تعديل خط القص للمعاينة */
+        .cut-line {
+	max-width: 18cm;
+	width: calc(100% - 2cm);
+	border-top: 3px dashed #000;
+	margin: 0.6cm auto;
+	position: relative;
+	text-align: center;
+}
+.cut-line::after {
+	content: " -- قص هنا / CUT HERE -- ";
+	position: absolute;
+	top: -0.85em;
+	left: 50%;
+	transform: translateX(-50%);
+	background: #fff;
+	padding: 0 6px;
+	font-weight: 700;
+	font-size: 12px;
+}
+
+/* تصميم خاص للطباعة - تحسين المسافات والأحجام */
+@media print {
+	/* اخفاء باقي الصفحة خارج منطقة الطباعة */
+	body * { visibility: hidden; margin: 0; padding: 0; }
+	.print-container, .print-container * { visibility: visible; }
+
+	.print-container {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		padding: 0;
+		margin: 0;
+	}
+
+	/* حاوية الطباعة: تضمن محاذاة مركزيّة وفجوة مناسبة */
+	.tickets-print {
+		padding: 0.8cm 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.4cm; /* فجوة صغيرة لوجود 3 بطاقات ضمن الصفحة */
+	}
+
+	/* حجم البطاقة النهائي للطباعة داخل هوامش صفحة A4 */
+	.ticket {
+		box-sizing: border-box;
+		width: 18cm;
+		height: 9cm;
+		margin: 0;
+		border: 6px solid #000;
+		border-radius: 12px;
+		background: #fff;
+		page-break-inside: avoid;
+		-webkit-print-color-adjust: exact;
+		visibility: visible;
+	}
+
+	/* اجعل خط القص مرئيًا في الطباعة */
+	.cut-line {
+		width: calc(18cm - 1cm);
+		border-top: 3px dashed #000;
+		margin: 0.6cm auto;
+		visibility: visible;
+	}
+	.cut-line::after {
+		content: " -- قص هنا / CUT HERE -- ";
+		position: relative;
+		top: -0.85em;
+		background: #fff;
+		padding: 0 6px;
+		font-weight: 700;
+		font-size: 12px;
+	}
+
+	/* تطبیق حجم الخط الموحد في الطباعة */
+	.ticket-table th { font-size: var(--ticket-font-size); }
+	.ticket-table td { font-size: var(--ticket-font-size); padding: 8px; }
+
+	@page {
+		size: A4;
+		margin: 0.8cm; /* هامش آمن للطابعة */
+	}
+}
+
+/* ضع هذا التعديل قريب بداية الـ <style> أو في نهاية القواعد */
+:root {
+	--ticket-font-size: 30px;
+}
+
+/* اجعل كل النصوص واضحة وبخط غليظ */
+html, body, .container, .app-container, .input-section, .preview-section, .ticket, .ticket * , .tickets-container, .ticket-table, .ticket-table th, .ticket-table td, input, select, button {
+	font-weight: 700 !important;
+}
+
+/* عناصر الإدخال والأزرار خصيصاً */
+input, select, textarea, button {
+	font-weight: 700 !important;
+}
+
+/* عنوان البطاقة (يمكن رفعه أكثر إن أردت) */
+.ticket-title, .ticket-table th {
+	font-weight: 900 !important;
+}
     </style>
 </head>
 <body>
     <div class="container no-print">
         <header>
-            <h1>برنامج ميزان السيارات - النور جروب</h1>
-            <p> من تصميم المهندس عمر صالح </p>
+            <h1>برنامج ميزان السيارات - النورجروب</h1>
+            <p>من تصميم المهندس عمر صالح</p>
         </header>
         
         <div class="app-container">
@@ -331,11 +449,12 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="vehicleType">نوع الصنف</label>
-                    <select id="vehicleType">
+                    <label for="itemType">نوع الصنف</label>
+                    <select id="itemType">
                         <option value="">اختر نوع الصنف</option>
                         <option value="حديد">حديد</option>
                         <option value="كنات">كنات</option>
+                        <option value="أخرى">أخرى</option>
                     </select>
                 </div>
                 
@@ -350,7 +469,7 @@
                 </div>
                 
                 <div class="actions">
-                    <button class="btn btn-print" id="printTicket">طباعة البطاقة</button>
+                    <button class="btn btn-print" id="printTicket" disabled>طباعة البطاقة</button>
                     <button class="btn" id="newTicket">بطاقة جديدة</button>
                 </div>
             </div>
@@ -364,7 +483,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const customerNameInput = document.getElementById('customerName');
             const netWeightInput = document.getElementById('netWeight');
-            const vehicleTypeSelect = document.getElementById('vehicleType');
+            const itemTypeSelect = document.getElementById('itemType');
             const generateTicketBtn = document.getElementById('generateTicket');
             const printTicketBtn = document.getElementById('printTicket');
             const newTicketBtn = document.getElementById('newTicket');
@@ -382,45 +501,41 @@
                 // تنسيق الوقت
                 const timeString = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
                 
-                return { date: dateString, time: timeString };
+                return { date: dateString, time: timeString, fullDateTime: `${dateString} - ${timeString}` };
             }
             
-            // إنشاء بطاقة الوزن
-            function createTicket(customerName, netWeight, vehicleType, index) {
-                const { date, time } = getCurrentDateTime();
-                
+            // إنشاء بطاقة الوزن (هيكل جديد يطابق التصميم)
+            function createTicket(customerName, netWeight, itemType) {
+                const { fullDateTime } = getCurrentDateTime();
+                // استخدام جدول: صف أول = عنوان (colspan=2)، ثم صفوف للبيانات وقيمة الوزن مكبرة
                 return `
                     <div class="ticket">
-                        <div class="ticket-header">
-                            <h2>النور جروب</h2>
-                            <p>- بطاقة وزن السياره - للتواصل 01008102097 -01068566282 ${index}</p>
-                        </div>
-                        
-                        <table>
-                            <tr>
-                                <th>اسم العميل</th>
-                                <td>${customerName}</td>
-                            </tr>
-                            <tr>
-                                <th>الوزن الصافي</th>
-                                <td class="net-weight">${netWeight} كجم</td>
-                            </tr>
-                            <tr>
-                                <th>نوع الصنف</th>
-                                <td>${vehicleType}</td>
-                            </tr>
-                            <tr>
-                                <th>التاريخ</th>
-                                <td>${date}</td>
-                            </tr>
-                            <tr>
-                                <th>الوقت</th>
-                                <td>${time}</td>
-                            </tr>
-                        </table>
-                        
-                        <div class="ticket-footer">
-                            <p>Thank you for your business with Al Noor Group - شكراً لتعاملكم مع النور جروب</p>
+                        <div class="ticket-inner" style="padding:7px; display:flex; flex-direction:column; height:100%;">
+                            <table class="ticket-table">
+                                <tr>
+                                    <th colspan="2">
+                                     Al Nour Group الـــــنــــور جـــــروب  <br>
+                                        <span style="font-size:15px;font-weight:700;"> بطاقة وزن السيارة - للتواصل 01008102097 -01068566282</span>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td class="label">اسم العميل</td>
+                                    <td class="value">${customerName}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">نوع الصنف</td>
+                                    <td class="value">${itemType}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">التاريخ والوقت</td>
+                                    <td class="value">${fullDateTime}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">الوزن الصافي</td>
+                                    <td class="value" style="font-size:48px;font-weight:900;color:#000000;background:#f6f6f6;">${netWeight} كجم</td>
+                                </tr>
+                            </table>
+                            <div class="ticket-footer" style="margin-top:8px;">شكراً لتعاملكم معنا - قم بلأحتفاظ بهذه الكرته ــــــــ حقوق ملكية البرنامج لدي المهندس /عمر صالح </div>
                         </div>
                     </div>
                 `;
@@ -430,7 +545,7 @@
             generateTicketBtn.addEventListener('click', function() {
                 const customerName = customerNameInput.value.trim();
                 const netWeight = netWeightInput.value.trim();
-                const vehicleType = vehicleTypeSelect.value;
+                const itemType = itemTypeSelect.value;
                 
                 if (!customerName) {
                     alert('يرجى إدخال اسم العميل');
@@ -444,32 +559,27 @@
                     return;
                 }
                 
-                if (!vehicleType) {
+                if (!itemType) {
                     alert('يرجى اختيار نوع الصنف');
-                    vehicleTypeSelect.focus();
+                    itemTypeSelect.focus();
                     return;
                 }
                 
-                // إنشاء نسختين من البطاقة للمعاينة
+                // إنشاء معاينة ببطاقتين مع خط قص بينهما
                 ticketsContainer.innerHTML = '';
-                for (let i = 1; i <= 2; i++) {
-                    ticketsContainer.innerHTML += createTicket(customerName, netWeight, vehicleType, i);
-                }
-                
-                // إنشاء محتوى الطباعة مع نسختين في صفحة واحدة
+                ticketsContainer.innerHTML += createTicket(customerName, netWeight, itemType);
+                ticketsContainer.innerHTML += '<div class="cut-line" aria-hidden="true"></div>';
+                ticketsContainer.innerHTML += createTicket(customerName, netWeight, itemType);
+
+                // محتوى الطباعة: بطاقتان مع خط قص بينهما
                 let printContent = `
                     <div class="tickets-print">
-                        <div class="ticket-row">
-                            ${createTicket(customerName, netWeight, vehicleType, 1)}
-                            ${createTicket(customerName, netWeight, vehicleType, 2)}
-                        </div>
-                        <div class="empty-space"></div>
+                        ${createTicket(customerName, netWeight, itemType)}
+                        <div class="cut-line" aria-hidden="true"></div>
+                        ${createTicket(customerName, netWeight, itemType)}
                     </div>
                 `;
-                
                 printContainer.innerHTML = printContent;
-                
-                // تمكين زر الطباعة
                 printTicketBtn.disabled = false;
             });
             
@@ -484,96 +594,19 @@
                     <html dir="rtl">
                     <head>
                         <meta charset="UTF-8">
-                        <title>طباعة بطاقة الوزن</title>
+                        <title>طباعة بطاقة الوزن - السؤرجروب</title>
                         <style>
-                            body {
-                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                                margin: 0;
-                                padding: 0;
-                                direction: rtl;
-                            }
-                            .tickets-print {
-                                display: flex;
-                                flex-direction: column;
-                                width: 100%;
-                                height: 100vh;
-                            }
-                            .ticket-row {
-                                display: flex;
-                                flex-direction: column;
-                                width: 100%;
-                                height: 60vh;
-                            }
-                            .ticket {
-                                width: 100%;
-                                height: 30vh;
-                                border: 2px solid #000;
-                                padding: 15px;
-                                display: flex;
-                                flex-direction: column;
-                                justify-content: space-between;
-                                page-break-inside: avoid;
-                            }
-                            .ticket:first-child {
-                                border-bottom: none;
-                            }
-                            .empty-space {
-                                height: 40vh;
-                                width: 100%;
-                            }
-                            .ticket table {
-                                width: 100%;
-                                border-collapse: collapse;
-                                border: 2px solid #000;
-                            }
-                            .ticket th, .ticket td {
-                                border: 2px solid #000;
-                                padding: 8px;
-                                text-align: center;
-                                font-size: 15px;
-                            }
-                            .ticket th {
-                                background-color: #f5f5f5;
-                                font-weight: bold;
-                            }
-                            .ticket-header {
-                                text-align: center;
-                                margin-bottom: 12px;
-                                padding-bottom: 8px;
-                                border-bottom: 2px solid #000;
-                            }
-                            .ticket-header h2 {
-                                font-size: 20px;
-                                margin-bottom: 5px;
-                                font-weight: bold;
-                            }
-                            .ticket-header p {
-                                font-size: 14px;
-                                font-weight: bold;
-                            }
-                            .net-weight {
-                                font-weight: bold;
-                                font-size: 16px;
-                                background-color: #f0f0f0;
-                            }
-                            .ticket-footer {
-                                text-align: center;
-                                margin-top: 12px;
-                                padding-top: 8px;
-                                border-top: 2px solid #000;
-                                font-size: 12px;
-                                font-weight: bold;
-                            }
-                            @page {
-                                size: A4;
-                                margin: 0.5cm;
-                            }
-                            @media print {
-                                body {
-                                    margin: 0;
-                                    padding: 0;
-                                }
-                            }
+                            html,body { margin:0; padding:0; direction:rtl; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+                            .tickets-print { padding:0.8cm 0; display:flex; flex-direction:column; align-items:center; gap:0.4cm; }
+                            .ticket { box-sizing:border-box; width:18cm; height:9cm; margin:0; border:6px solid #000; border-radius:12px; background:#fff; page-break-inside:avoid; }
+                            .ticket-inner { box-sizing:border-box; padding:10px; height:100%; display:flex; flex-direction:column; }
+                            .ticket-table { width:100%; border-collapse:collapse; table-layout:fixed; height: calc(100% - 40px); }
+                            .ticket-table th { font-size:var(--ticket-font-size); font-weight:900; padding:12px; text-align:center; border-bottom:3px solid #000; background:#fff; }
+                            .ticket-table td { border:2px solid #000; padding:8px; text-align:center; font-size:var(--ticket-font-size); vertical-align:middle; }
+                            .cut-line { width: calc(18cm - 1cm); border-top:3px dashed #000; margin:0.6cm auto; text-align:center; }
+                            .cut-line::after { content: " -- قص هنا / CUT HERE -- "; display:inline-block; background:#fff; padding:0 6px; font-weight:700; font-size:12px; position:relative; top:-0.6em; }
+                            @page { size:A4; margin:0.8cm; }
+                            @media print { body{margin:0} }
                         </style>
                     </head>
                     <body onload="window.print();">
@@ -597,7 +630,7 @@
                 // مسح الحقول
                 customerNameInput.value = '';
                 netWeightInput.value = '';
-                vehicleTypeSelect.value = '';
+                itemTypeSelect.value = '';
                 
                 // إعادة تعيين المعاينة
                 ticketsContainer.innerHTML = '';
